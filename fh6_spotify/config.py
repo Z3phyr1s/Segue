@@ -146,8 +146,6 @@ class Config:
     swipe_skip_threshold: int = 240
     touchpad_tap_enabled: bool = True
     pause_input: str = "tap"
-    tap_max_ms: int = 250
-    tap_move_threshold: int = 50
     tap_sensitivity: int = 70
     dpad_up_button: int = 11
     dpad_down_button: int = 12

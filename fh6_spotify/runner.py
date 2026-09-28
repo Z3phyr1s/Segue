@@ -337,7 +337,7 @@ def start_runtime(c: Config, ui: dict):
             return
         if s < 0:
             nq = ui.get("np_queue") or {}
-            if not nq.get("prev") and not []:
+            if not nq.get("prev"):
                 if os.environ.get("SEGUE_CAROUSEL_DBG"):
                     _carousel_dbg("MOUSE-BLOCK prev-empty (autoqueue)")
                 return None

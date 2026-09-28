@@ -5,7 +5,12 @@ import time
 from fh6_spotify.config import Config
 from fh6_spotify.skip_rule import SkipRule
 from fh6_spotify import mediakeys
-from fh6_spotify.gamepad import touch_volume_delta, is_tap, classify_swipe
+from fh6_spotify.gamepad import (
+    touch_volume_delta,
+    is_tap,
+    classify_swipe,
+    tap_thresholds,
+)
 from fh6_spotify.input_backend import named_active
 
 _DS4_VENDOR = 1356
@@ -506,14 +511,19 @@ class DualShockInput:
                     self._tp_mode is None
                     and self.c.touchpad_tap_enabled
                     and self.c.pause_input == "tap"
-                    and is_tap(
+                    and getattr(self.c, "tap_sensitivity", 70) > 0
+                ):
+                    _max_ms, _max_move = tap_thresholds(
+                        getattr(self.c, "tap_sensitivity", 70)
+                    )
+                    if is_tap(
                         (now - self._tp_start_t) * 1000,
                         self._tp_moved,
-                        self.c.tap_max_ms,
-                        self.c.tap_move_threshold,
-                    )
-                ):
-                    self._on_tap()
+                        _max_ms,
+                        _max_move,
+                        min_ms=40.0,
+                    ):
+                        self._on_tap()
         self._tp_was_active = active
         return delta
 

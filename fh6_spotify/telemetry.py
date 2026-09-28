@@ -91,8 +91,6 @@ class TelemetryListener:
                 s.close()
                 if i < attempts - 1:
                     time.sleep(delay)
-            else:
-                pass
         print(f"  telemetry: port {port} unavailable; running without game telemetry")
 
     def poll(self) -> None:
@@ -100,8 +98,6 @@ class TelemetryListener:
         if self._sock is None:
             return
         else:
-            if False:
-                pass
             while True:
                 try:
                     data = self._sock.recv(2048)
