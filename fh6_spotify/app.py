@@ -310,13 +310,13 @@ def build(app: QApplication):
 
     def rebuild_window():
         """Recreate the settings window at the new UI scale, keeping position."""
-        import fh6_spotify.settings as _st
+        import fh6_spotify.settings_ui as _sui
 
-        _st._SCALE = (
-            c.ui_scale if c.ui_scale in _st._SCALE_STEPS else _st._SCALE_STEPS[0]
+        _sui._SCALE = (
+            c.ui_scale if c.ui_scale in _sui._SCALE_STEPS else _sui._SCALE_STEPS[0]
         )
         new_af = QFont("Segoe UI")
-        new_af.setPixelSize(int(round(15 * _st._SCALE)))
+        new_af.setPixelSize(int(round(15 * _sui._SCALE)))
         new_af.setStyleStrategy(QFont.PreferAntialias | QFont.NoSubpixelAntialias)
         new_af.setHintingPreference(QFont.PreferFullHinting)
         app.setFont(new_af)

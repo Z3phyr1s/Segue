@@ -1,0 +1,13 @@
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["F", "E9", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# settings.py re-exports the icon/style helper layer split out to
+# settings_ui.py via `from fh6_spotify.settings_ui import *` (settings_ui
+# defines __all__, so this is a deliberate, bounded re-export - not an
+# accidental wildcard). F821 (actually-undefined names) still applies and
+# passes; F405 just can't tell a verified re-export from a real wildcard.
+"fh6_spotify/settings.py" = ["F405"]
