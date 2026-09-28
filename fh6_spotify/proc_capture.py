@@ -41,7 +41,7 @@ import ctypes.wintypes
 import sys
 import time
 from ctypes import POINTER
-from typing import Generator, Optional
+from typing import Generator
 
 if not hasattr(sys, "coinit_flags"):
     sys.coinit_flags = 0
@@ -333,7 +333,7 @@ class ProcessLoopbackCapture:
                 None,
             )
         except Exception as e:
-            raise RuntimeError(f"IAudioClient.Initialize failed: {e!r}")
+            raise RuntimeError(f"IAudioClient.Initialize failed: {e!r}") from e
         data_evt = ctypes.windll.kernel32.CreateEventW(None, False, False, None)
         client.SetEventHandle(data_evt)
         cc_iid = _GUID(IID_IAudioCaptureClient)

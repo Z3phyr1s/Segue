@@ -1843,7 +1843,7 @@ class SpotifyOverlay(QWidget):
         if self._paint_off:
             p.translate(0, self._paint_off)
         cy = (_H - _COVER) // 2 + self._slide
-        ccx, ccy = (_PAD + _COVER / 2, cy + _COVER / 2)
+        ccx = _PAD + _COVER / 2
         card_cur = None
         card_pix = self._cover_pix
         if self._strip_a > 0.01 and self._queue:

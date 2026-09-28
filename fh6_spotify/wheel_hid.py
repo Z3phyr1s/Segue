@@ -24,7 +24,6 @@ pygame backend used, so the Controls rebind UI works unchanged.
 from __future__ import annotations
 import ctypes
 import threading
-import time
 from ctypes import wintypes
 from fh6_spotify import mediakeys
 from fh6_spotify.input_backend import (
@@ -331,10 +330,6 @@ class _HidDevice:
 def _enumerate_game_devices():
     """All HID top-level collections that look like game devices, as
     (path, name) sorted by path for a stable btn:N index space."""
-    try:
-        import pydualsense
-    except Exception:
-        pass
     import hidapi
 
     out = []

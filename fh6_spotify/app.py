@@ -626,7 +626,6 @@ def main(auto_quit_ms: int | None = None) -> None:
         tick = QTimer()
         tick.start(200)
         tick.timeout.connect(lambda: None)
-        window = app._segue["window"]
         app._segue["show_window"](force=True)
         QTimer.singleShot(250, lambda: app._segue["show_window"](force=True))
         if auto_quit_ms is not None:

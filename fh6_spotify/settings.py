@@ -56,7 +56,6 @@ from PySide6.QtWidgets import (
     QMenu,
     QMessageBox,
     QScrollArea,
-    QInputDialog,
     QDialog,
     QListWidget,
     QStackedWidget,
@@ -74,6 +73,7 @@ from fh6_spotify import input_backend as _ib
 from fh6_spotify import mediakeys as _mk
 from fh6_spotify import autostart as _autostart
 from fh6_spotify import updater as _updater
+from fh6_spotify import game_presets as _gp
 from fh6_spotify.version import VERSION as _APP_VERSION
 from fh6_spotify.version import VERSION_LABEL as _APP_VERSION_LABEL
 from fh6_spotify.theme import (
@@ -720,8 +720,6 @@ class _FadeMenu(QMenu):
         self.aboutToShow.connect(lambda: self.setWindowOpacity(0.0))
 
     def showEvent(self, e):
-        from PySide6.QtCore import QPropertyAnimation, QEasingCurve
-
         super().showEvent(e)
         prev = getattr(self, "_fade_anim", None)
         if prev is not None:
@@ -4048,8 +4046,6 @@ class _HelpWindow(QWidget):
                 row.addWidget(open_btn)
                 v.addLayout(row)
                 v.addSpacing(_s(8))
-            from fh6_spotify import game_presets as _gp
-
             if tabname == "Setup":
                 self._setup_toggle_row = QHBoxLayout()
                 self._setup_toggle_row.setSpacing(_s(6))
@@ -4842,8 +4838,6 @@ class _RebindDialog(QDialog):
         devrow = QHBoxLayout()
         devrow.setSpacing(_s(6))
         self._dev_btns = {}
-        from fh6_spotify import game_presets as _gp
-
         _allowed = set(_gp.supported_devices(self._cfg.game_preset))
         _allowed.add(self._wdev)
         for dev, label in [(d, l) for d, l in self._DEVICES if d in _allowed]:
@@ -6681,8 +6675,6 @@ class _DevicePickerDialog(QDialog):
         self.setStyleSheet(_build_qss(_CHECK))
         self.setFont(_ui_font(14))
         self._chosen = cfg.input_device
-        from fh6_spotify import game_presets as _gp
-
         allowed = set(_gp.supported_devices(cfg.game_preset))
         devs = [(k, n, t) for k, n, t in self._ALL_DEVS if k in allowed]
         if not devs:
@@ -6734,8 +6726,6 @@ class _DevicePickerDialog(QDialog):
         if closed). When the active preset only supports one device, skip
         the dialog entirely and return that device - no reason to prompt
         the user to pick from a one-item list."""
-        from fh6_spotify import game_presets as _gp
-
         allowed = _gp.supported_devices(cfg.game_preset)
         if len(allowed) == 1:
             return allowed[0]
@@ -6773,8 +6763,6 @@ class _GamePresetPickerDialog(QDialog):
         sub.setWordWrap(True)
         v.addWidget(sub)
         v.addSpacing(_s(12))
-        from fh6_spotify import game_presets as _gp
-
         card_row = QHBoxLayout()
         card_row.setSpacing(_s(10))
         for key, preset in _gp.GAME_PRESETS.items():
@@ -9802,7 +9790,8 @@ class SettingsWindow(QWidget):
                 for c in _hstops
             ]
             _htxt = _contrast_text(
-                "#%02x%02x%02x" % tuple(sum(ch) // len(_hrgb) for ch in zip(*_hrgb))
+                "#%02x%02x%02x"
+                % tuple(sum(ch) // len(_hrgb) for ch in zip(*_hrgb, strict=True))
             )
         else:
             _hbg, _htxt = _hstops[0], _contrast_text(_hstops[0])
@@ -10023,7 +10012,9 @@ class SettingsWindow(QWidget):
                 tuple((int(c.lstrip("#")[k : k + 2], 16) for k in (0, 2, 4)))
                 for c in stops
             ]
-            avg = "#%02x%02x%02x" % tuple((sum(ch) // len(rgbs) for ch in zip(*rgbs)))
+            avg = "#%02x%02x%02x" % tuple(
+                (sum(ch) // len(rgbs) for ch in zip(*rgbs, strict=True))
+            )
             txt = _contrast_text(avg)
             btn_col = avg
         else:
@@ -10766,14 +10757,14 @@ class SettingsWindow(QWidget):
 
         def _run():
             try:
-                from fh6_spotify import spotify_links as _sl
+                from fh6_spotify import spotify_links as _splinks
 
-                r = _sl.resolve(track, artist)
+                r = _splinks.resolve(track, artist)
                 uri = ""
                 if r:
                     uri = (r.get(kind) or {}).get("uri") or ""
                 if not uri:
-                    uri = _sl.search_uri(
+                    uri = _splinks.search_uri(
                         artist if kind == "artist" else f"{track} {artist}"
                     )
                 os.startfile(uri)
@@ -10951,8 +10942,6 @@ class SettingsWindow(QWidget):
 
         all_presets = _presets.load_presets()
         cur_game = self._cfg.game_preset
-        from fh6_spotify import game_presets as _gp
-
         def _game_icon(game_key: str):
             if game_key == "forza":
                 t = _forza_pixmap(16)
@@ -11106,8 +11095,6 @@ class SettingsWindow(QWidget):
     }
 
     def _apply_preset(self, data: dict):
-        from fh6_spotify import game_presets as _gp
-
         cur_preset = self._cfg.game_preset
         for field in _presets.PRESET_FIELDS:
             if field not in data:
@@ -11929,8 +11916,6 @@ class SettingsWindow(QWidget):
         """Title / launch name candidates for the current game preset. 'Forza
         Horizon' matches the FH4/5/6 window titles; 'other' uses the picked
         process's base name."""
-        from fh6_spotify import game_presets as _gp
-
         key = getattr(self._cfg, "game_preset", "forza")
         if key == "other":
             t = (getattr(self._cfg, "general_target_process", "") or "").rsplit(".", 1)[
@@ -13243,8 +13228,6 @@ class SettingsWindow(QWidget):
         if time.monotonic() - self._game_menu_closed_at < 0.25:
             return None
         self._close_open_pickers()
-        from fh6_spotify import game_presets as _gp
-
         current = self._cfg.game_preset
         sz = _s(22)
         items = []
@@ -13331,8 +13314,6 @@ class SettingsWindow(QWidget):
         """User picked a preset from the chevron menu (or auto-detect did).
         Apply its defaults to cfg + persist + refresh the panel visibility
         so irrelevant Mixer/Extras rows hide for the new preset."""
-        from fh6_spotify import game_presets as _gp
-
         if key == self._cfg.game_preset:
             return None
         _gp.apply_preset(self._cfg, key)
@@ -13352,8 +13333,6 @@ class SettingsWindow(QWidget):
         picked = _GamePickerDialog.pick(self, self._cfg.general_target_process)
         if not picked:
             return None
-        from fh6_spotify import game_presets as _gp
-
         matched = None
         for key, p in _gp.GAME_PRESETS.items():
             if p.get("exe", "").lower() == picked.lower():
@@ -13386,8 +13365,6 @@ class SettingsWindow(QWidget):
         """Show each Advanced row only when the section is open AND the current
         preset surfaces that control. Hides the Advanced button entirely when
         the preset has no advanced controls (e.g. Rocket League)."""
-        from fh6_spotify import game_presets as _gp
-
         key = self._cfg.game_preset
         any_avail = False
         for ctrl, row in getattr(self, "_adv_rows", []):
@@ -13404,8 +13381,6 @@ class SettingsWindow(QWidget):
         """Hide / show Mixer + Extras controls based on the current preset's
         `show` dict. Called after the panel is built and on preset switch.
         Safe to call when widgets haven't been built yet - skips missing."""
-        from fh6_spotify import game_presets as _gp
-
         key = self._cfg.game_preset
         if hasattr(self, "_sliders"):
             unfoc_slider = self._sliders.get("unfocused")
