@@ -185,7 +185,10 @@ class _HidDevice:
             ):
                 for i in range(n.value):
                     vc = arr[i]
-                    usage = vc.Range.UsageMin if vc.IsRange else vc.Range.UsageMin
+                    # Win32's HIDP_VALUE_CAPS unions Range/NotRange at the same
+                    # offset, so NotRange.Usage and Range.UsageMin are the same
+                    # bytes; only Range is modeled here, valid for both cases.
+                    usage = vc.Range.UsageMin
                     if (
                         vc.UsagePage == _USAGE_PAGE_GENERIC
                         and usage == _USAGE_HATSWITCH
