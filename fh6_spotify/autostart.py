@@ -7,6 +7,12 @@ import subprocess
 _CREATE_NO_WINDOW = 134217728
 
 
+def _ps_quote(s: str) -> str:
+    """Escape a value for embedding in a single-quoted PowerShell string
+    (doubles embedded quotes, e.g. install paths like C:\\Users\\O'Brien\\...)."""
+    return str(s).replace("'", "''")
+
+
 def _startup_lnk() -> str:
     base = os.environ.get("APPDATA", os.path.expanduser("~"))
     return os.path.join(
@@ -26,7 +32,7 @@ def installed_mode():
     else:
         try:
             ps = "$s=(New-Object -ComObject WScript.Shell).CreateShortcut('{}');Write-Output $s.Arguments".format(
-                lnk
+                _ps_quote(lnk)
             )
             out = (
                 subprocess.run(
@@ -102,7 +108,10 @@ def install(direct: bool = False) -> None:
     target, args, workdir = _target_args_workdir(direct)
     os.makedirs(os.path.dirname(lnk), exist_ok=True)
     ps = "$s=(New-Object -ComObject WScript.Shell).CreateShortcut('{lnk}');$s.TargetPath='{t}';$s.Arguments='{a}';$s.WorkingDirectory='{w}';$s.Save()".format(
-        lnk=lnk, t=target, a=args, w=workdir
+        lnk=_ps_quote(lnk),
+        t=_ps_quote(target),
+        a=_ps_quote(args),
+        w=_ps_quote(workdir),
     )
     try:
         subprocess.run(

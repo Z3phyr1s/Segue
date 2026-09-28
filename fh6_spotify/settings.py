@@ -1303,7 +1303,7 @@ def _mic_pixmap(size: int = 16, color: str = None) -> QPixmap:
     return pix.scaled(_s(size), _s(size), Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
 
-def _smooth_scroll(area, duration=240):
+def _smooth_scroll(area):
     """Smooth wheel scrolling: a refresh-rate timer eases the scrollbar toward
     an accumulating target, instead of the old per-notch QPropertyAnimation that
     restarted its OutCubic on every notch (continuous scrolling then felt like a
@@ -1896,7 +1896,6 @@ def _folder_pixmap(size: int = 28) -> QPixmap:
 
 
 _ASSETS = os.path.join(os.path.dirname(__file__), "assets")
-_CHECK = os.path.join(_ASSETS, "check.png").replace("\\", "/")
 _FORZA = os.path.join(_ASSETS, "forza.png")
 _SPOTIFY = os.path.join(_ASSETS, "spotify.png")
 _LINK = os.path.join(_ASSETS, "link.png")
@@ -2427,7 +2426,7 @@ def _vk_label(vk: int) -> str:
     return f"Key {vk}"
 
 
-def _build_qss(check: str) -> str:
+def _build_qss() -> str:
     """Stylesheet with every px scaled by _s() for live UI scaling."""
     hw = _s(18)
     bw = max(1, _s(2))
@@ -3984,7 +3983,7 @@ class _HelpWindow(QWidget):
         self.setWindowTitle("Segue - Help")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(14))
         self.setFixedSize(_s(560), _s(560))
         outer = QHBoxLayout(self)
@@ -4511,7 +4510,7 @@ class _CaptureDialog(QDialog):
         self.setWindowTitle("Rebind")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(15))
         self.setMinimumWidth(_s(470))
         v = QVBoxLayout(self)
@@ -4821,7 +4820,7 @@ class _RebindDialog(QDialog):
         self.setWindowTitle("Controls")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         from PySide6.QtGui import QPalette
 
         _pal = self.palette()
@@ -5028,8 +5027,8 @@ class _RebindDialog(QDialog):
                 _tp_row.addLayout(self._pause_input_row(trailing_stretch=False))
                 self._cl.addLayout(_tp_row)
             if (
-                is_forza_preset
-                and (not self._wds.get("pause_button"))
+                (is_forza_preset
+                and (not self._wds.get("pause_button")))
                 or (not is_forza_preset and self._wpause == "tap")
             ):
                 _tap_row = QWidget()
@@ -5954,7 +5953,7 @@ class _ConfirmDialog(QDialog):
         self.setWindowTitle("Segue")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(14))
         self.setMinimumWidth(_s(360))
         v = QVBoxLayout(self)
@@ -6012,7 +6011,7 @@ class _CustomSourceDialog(QDialog):
         self.setWindowTitle("Segue")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(14))
         self.setMinimumWidth(_s(380))
         v = QVBoxLayout(self)
@@ -6569,7 +6568,7 @@ class _PresetsPopup(QFrame):
         )
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.setObjectName("iconpopup")
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self._v = QVBoxLayout(self)
         self._v.setContentsMargins(_s(6), _s(6), _s(6), _s(6))
         self._v.setSpacing(_s(2))
@@ -6672,7 +6671,7 @@ class _DevicePickerDialog(QDialog):
         self.setWindowTitle("Segue")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(14))
         self._chosen = cfg.input_device
         allowed = set(_gp.supported_devices(cfg.game_preset))
@@ -6745,7 +6744,7 @@ class _GamePresetPickerDialog(QDialog):
         self.setWindowTitle("Segue")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(14))
         self._chosen = "forza"
         v = QVBoxLayout(self)
@@ -6820,7 +6819,7 @@ class _GamePickerDialog(QDialog):
         self.setWindowTitle("Pick app")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(14))
         self.setMinimumSize(_s(360), _s(420))
         self._chosen = current
@@ -7309,7 +7308,7 @@ class _WelcomeDialog(QDialog):
         self.setWindowTitle("Segue")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(14))
         self.setMinimumWidth(_s(380))
         v = QVBoxLayout(self)
@@ -7529,7 +7528,7 @@ class _ForzaSetupGate(QDialog):
         self.setWindowTitle("Segue - Forza setup")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setModal(True)
         self.setFixedWidth(_s(600))
         self.setMinimumHeight(_s(540))
@@ -7908,7 +7907,7 @@ class _GeneralIntroGate(QDialog):
         )
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setModal(True)
         self.setFixedWidth(_s(540))
         self.setMinimumHeight(_s(500))
@@ -8182,7 +8181,7 @@ class _TourOverlay(QWidget):
         self.setAttribute(Qt.WA_TransparentForMouseEvents, False)
         self.setAttribute(Qt.WA_ShowWithoutActivating)
         self.setFocusPolicy(Qt.NoFocus)
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(15))
         self._parent_win = parent
         self._steps = steps
@@ -8395,7 +8394,7 @@ class _PreferencesDialog(QDialog):
         self.setWindowTitle("Preferences")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setMinimumWidth(_s(320))
         lay = QVBoxLayout(self)
         lay.setContentsMargins(_s(18), _s(16), _s(18), _s(16))
@@ -8745,7 +8744,7 @@ class SettingsWindow(QWidget):
         self.setWindowTitle("Segue")
         if os.path.exists(_APP_ICON):
             self.setWindowIcon(QIcon(_APP_ICON))
-        self.setStyleSheet(_build_qss(_CHECK))
+        self.setStyleSheet(_build_qss())
         self.setFont(_ui_font(15))
         self._hint_font = _ui_font(14)
         self._save_timer = QTimer(self)
@@ -9769,7 +9768,7 @@ class SettingsWindow(QWidget):
         dlg.setWindowTitle("What's new")
         if os.path.exists(_APP_ICON):
             dlg.setWindowIcon(QIcon(_APP_ICON))
-        dlg.setStyleSheet(_build_qss(_CHECK))
+        dlg.setStyleSheet(_build_qss())
         dlg.setFont(_ui_font(14))
         dlg.setFixedWidth(_s(470))
         outer = QVBoxLayout(dlg)
@@ -11042,7 +11041,7 @@ class SettingsWindow(QWidget):
         dlg.setWindowTitle("Save preset")
         if os.path.exists(_APP_ICON):
             dlg.setWindowIcon(QIcon(_APP_ICON))
-        dlg.setStyleSheet(_build_qss(_CHECK))
+        dlg.setStyleSheet(_build_qss())
         dlg.setFont(_ui_font(14))
         dlg.setMinimumWidth(_s(320))
         v = QVBoxLayout(dlg)
@@ -11261,7 +11260,7 @@ class SettingsWindow(QWidget):
         self._last_cover_key = None
         self._active_slider = None
         try:
-            self.setStyleSheet(_build_qss(_CHECK))
+            self.setStyleSheet(_build_qss())
             self._load_source_icons()
             self._link_blend_cache = {}
             self._load_play_icons()
@@ -11385,7 +11384,7 @@ class SettingsWindow(QWidget):
                 return None
             _save_theme(name)
             self._retheme()
-            dlg.setStyleSheet(_build_qss(_CHECK))
+            dlg.setStyleSheet(_build_qss())
             dlg.refresh_selected(name)
             _apply_dwm_titlebar(dlg)
             return None

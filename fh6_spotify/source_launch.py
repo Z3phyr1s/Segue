@@ -214,7 +214,8 @@ def _resolve_steam_appid(name_candidates):
     libs = [os.path.join(root, "steamapps")]
     try:
         vdf = os.path.join(root, "steamapps", "libraryfolders.vdf")
-        txt = open(vdf, encoding="utf-8", errors="ignore").read()
+        with open(vdf, encoding="utf-8", errors="ignore") as f:
+            txt = f.read()
         for m in re.finditer('"path"\\s*"([^"]+)"', txt):
             p = os.path.join(m.group(1).replace("\\\\", "\\"), "steamapps")
             if p not in libs:
@@ -224,7 +225,8 @@ def _resolve_steam_appid(name_candidates):
     for lib in libs:
         for acf in glob.glob(os.path.join(lib, "appmanifest_*.acf")):
             try:
-                txt = open(acf, encoding="utf-8", errors="ignore").read()
+                with open(acf, encoding="utf-8", errors="ignore") as f:
+                    txt = f.read()
             except Exception:
                 continue
             nm = re.search('"name"\\s*"([^"]+)"', txt)

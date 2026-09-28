@@ -120,10 +120,10 @@ def build(app: QApplication):
         c.game_preset_chosen
         and c.device_chosen
         and (
-            c.game_preset == "forza"
-            and c.forza_gate_seen
-            or c.game_preset == "rocketleague"
-            and c.rl_gate_seen
+            (c.game_preset == "forza"
+            and c.forza_gate_seen)
+            or (c.game_preset == "rocketleague"
+            and c.rl_gate_seen)
             or (c.game_preset == "other" and c.other_gate_seen)
         )
     ):

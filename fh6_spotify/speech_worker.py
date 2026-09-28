@@ -167,8 +167,8 @@ class SpeechWorker:
                     if scope == "system":
                         g = bool(getattr(self, "game_running", True))
                         if (
-                            cap_mode == "system"
-                            and not g
+                            (cap_mode == "system"
+                            and not g)
                             or (cap_mode == "discord" and g)
                         ):
                             break

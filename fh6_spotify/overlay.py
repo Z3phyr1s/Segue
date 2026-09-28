@@ -922,8 +922,8 @@ class SpotifyOverlay(QWidget):
                     and now - self._last_skip_t > 0.6
                 ):
                     if (
-                        rc != self._ap_skip_from
-                        and now - self._clu_change_t > 1.0
+                        (rc != self._ap_skip_from
+                        and now - self._clu_change_t > 1.0)
                         or now - self._ap_skip_t > 6.0
                     ):
                         self._ap_frozen = None
@@ -1114,7 +1114,7 @@ class SpotifyOverlay(QWidget):
             self._strip_track = tk
         strip_on = (
             1.0
-            if (self._held or self._hovering and now < self._skip_until)
+            if (self._held or (self._hovering and now < self._skip_until))
             and self._queue
             and not self._cover_only
             else 0.0
@@ -1394,7 +1394,7 @@ class SpotifyOverlay(QWidget):
         Resolve name -> id via the getsegue.app worker, fall back to a search.
         Network + shell open run off the GUI thread."""
         track, artist = (self._title, self._artist)
-        if kind == "artist" and not artist or not (track or artist):
+        if (kind == "artist" and not artist) or not (track or artist):
             return None
 
         def _run():
@@ -1857,9 +1857,9 @@ class SpotifyOverlay(QWidget):
             self._big_cur is not None
             and self._big_pix is not None
             and (
-                self._nq
+                (self._nq
                 and (self._nq.get("current") or {}).get("uri")
-                == self._big_cur.get("uri")
+                == self._big_cur.get("uri"))
                 or (self._big_cur.get("title") or "") == (self._title or "")
                 or (
                     self._nq
